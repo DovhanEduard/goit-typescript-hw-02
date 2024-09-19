@@ -1,8 +1,16 @@
 import css from './SearchBar.module.css';
 import toast, { Toaster } from 'react-hot-toast';
 
-function SearchBar({ onSearch }) {
-  const handleSubmit = event => {
+type Props = {
+  onSearch: (searchValue: string) => void;
+};
+
+type SearchFormValues = {
+  searchField: string;
+};
+
+function SearchBar({ onSearch }: Props) {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const searchValue = event.currentTarget.search.value.trim();

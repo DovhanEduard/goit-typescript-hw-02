@@ -1,10 +1,15 @@
 import ImageCard from '../ImageCard/ImageCard';
 import css from './ImageGallery.module.css';
+import { Image, ImageGalleryProps } from './ImageGallery.types';
 
-const ImageGallery = ({ images, onSmallImgClick, onClick }) => {
+const ImageGallery = ({
+  images,
+  onSmallImgClick,
+  onClick,
+}: ImageGalleryProps) => {
   return (
     <ul className={css.galleryList}>
-      {images.map((image, index) => {
+      {images?.map((image, index) => {
         return (
           <li className={css.galleryItem} key={index}>
             <ImageCard

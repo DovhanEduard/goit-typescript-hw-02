@@ -1,14 +1,25 @@
 import Modal from 'react-modal';
 import css from './ImageModal.module.css';
+import { Image } from '../ImageGallery/ImageGallery.types';
 
-function ImageModal({ image, modalIsOpen, closeModal, onAfterClose }) {
+
+
+type Props = {
+  image: Image;
+  isOpen: boolean;
+  closeModal: () => void;
+  onAfterClose: () => void;
+  
+};
+
+function ImageModal({ image, isOpen, closeModal, onAfterClose }: Props) {
   Modal.setAppElement('#modal');
 
   return (
     <Modal
       className={css.modal}
       overlayClassName={css.backdrop}
-      isOpen={modalIsOpen}
+      isOpen={isOpen}
       onRequestClose={closeModal}
       onAfterClose={onAfterClose}
       shouldCloseOnOverlayClick={true}

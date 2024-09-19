@@ -1,10 +1,18 @@
+import { Image } from '../ImageGallery/ImageGallery.types';
 import css from './ImageCard.module.css';
 
-function ImageCard({ image, onSmallImgClick, onClick }) {
-  const handleClick = () => {
+type Props = {
+  image: Image;
+  onSmallImgClick: (value: Image) => void;
+  onClick: () => void;
+};
+
+function ImageCard({ image, onSmallImgClick, onClick }: Props) {
+  const handleClick = (): void => {
     onSmallImgClick(image);
     onClick();
   };
+
   return (
     <div onClick={handleClick}>
       <img

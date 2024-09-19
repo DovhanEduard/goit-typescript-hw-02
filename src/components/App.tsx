@@ -7,18 +7,21 @@ import ErrorMessage from './ErrorMessage/ErrorMessage';
 import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
 import ImageModal from './ImageModal/ImageModal';
 import { getImagesByValue } from './services/api';
+import { string } from 'prop-types';
+import { Image } from './ImageGallery/ImageGallery.types';
+
 
 function App() {
-  const [images, setImages] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [searchedValue, setSearchedValue] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [images, setImages] = useState<Image[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [searchedValue, setSearchedValue] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
+  const [selectedImage, setSelectedImage] = useState<Image | null>(null);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
 
-  const fetchImages = (page, searchValue) => {
+  const fetchImages = (page: number, searchValue: string) => {
     const fetchPhotos = async () => {
       try {
         setCurrentPage(page);
@@ -27,14 +30,17 @@ function App() {
 
         const data = await getImagesByValue(page, searchValue);
         const isFirstPage = page === 1;
-        const updatedCurrentData = isFirstPage
-          ? data.results
-          : [...images, ...data.results];
 
-        setImages(updatedCurrentData);
+        if (isFirstPage) {
+          setImages(data.results);
+        } else {
+          if (images === null) return;
+          setImages([...images, ...data.results]);
+        }
+
         setTotalPages(data.total_pages);
       } catch (err) {
-        setError(err.message);
+        if (err instanceof Error) setError(err.message);
       } finally {
         setIsLoading(false);
       }
@@ -42,7 +48,7 @@ function App() {
     fetchPhotos();
   };
 
-  const onSearch = searchValue => {
+  const onSearch =( searchValue: string) => {
     setSearchedValue(searchValue);
 
     fetchImages(1, searchValue);
@@ -65,9 +71,10 @@ function App() {
 
   const onAfterClose = () => {
     setSelectedImage(null);
+    setIsOpen(false);
   };
 
-  const isImages = Boolean(images?.length);  
+  const isImages = Boolean(images?.length);
   const isPagesToLoad = currentPage !== totalPages;
 
   return (
@@ -88,8 +95,7 @@ function App() {
 
       {selectedImage && (
         <ImageModal
-          modalIsOpen={modalIsOpen}
-          openModal={openModal}
+          isOpen={modalIsOpen}
           closeModal={closeModal}
           onAfterClose={onAfterClose}
           image={selectedImage}
